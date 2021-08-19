@@ -1,8 +1,0 @@
-__version__ = "0.0.1"
-import numpy as np 
-from .gain_curves import (
-	gain_agc_score,
-	gain_agc_approximate,
-	gain_curve,
-)
-
