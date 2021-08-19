@@ -14,7 +14,7 @@ The functions can be imported from the supplied `agc.py` file, or installed via 
 ## A simple example
 
 ```
-## create toy binary labels and scores
+## create toy binary labels and scores for illustration
 labels = np.concatenate((np.repeat(1,100),np.repeat(0,900)))
 scores = np.concatenate((np.random.uniform(.4,.8,100),np.random.uniform(.2,.6,900)))
 
@@ -26,5 +26,8 @@ print(agc_score(labels, scores, normalized=False))
 
 ## now the area for the top scoring 10% of the points
 print(agc_score(labels, scores, truncate=0.1))
+
+## or top scoring 100 points
+print(agc_score(labels, scores, truncate=100))
 ```
 
