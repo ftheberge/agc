@@ -1,7 +1,7 @@
 import numpy as np
 
 ## Area under Gain Curve
-def gain_agc_score(y_true, y_score, pos_label=1, sample_weight=None, truncate=1, normalized=True):
+def agc_score(y_true, y_score, pos_label=1, sample_weight=None, truncate=1, normalized=True):
     """
     Compute the area under the gain curve (agc) for binary labelled data
 
@@ -39,7 +39,7 @@ def gain_agc_score(y_true, y_score, pos_label=1, sample_weight=None, truncate=1,
 
     >>> labels = np.concatenate((np.repeat(1,100),np.repeat(0,900)))
     >>> scores = np.concatenate((np.random.uniform(.4,.8,100),np.random.uniform(.2,.6,900)))
-    >>> gain_agc_score(labels, scores)
+    >>> agc_score(labels, scores)
 
     Reference
     ---------
@@ -205,7 +205,7 @@ def gain_curve(y_true, y_score, pos_label=1, sample_weight=None, truncate=1):
 
     
 ## Approximate AGC via sampling
-def gain_agc_approximate(y_true, y_score, pos_label=1, sample_weight=None, truncate=1, normalized=True, sample=1, quantiles=100, interpolation='linear'):
+def agc_approximate(y_true, y_score, pos_label=1, sample_weight=None, truncate=1, normalized=True, sample=1, quantiles=100, interpolation='linear'):
 
     """
     Approximate the area under the gain curve for binary labelled data via sampling
@@ -256,7 +256,7 @@ def gain_agc_approximate(y_true, y_score, pos_label=1, sample_weight=None, trunc
 
     >>> labels = np.concatenate((np.repeat(1,100),np.repeat(0,900)))
     >>> scores = np.concatenate((np.random.uniform(.4,.8,100),np.random.uniform(.2,.6,900)))
-    >>> print('AGC:',gain_agc_score(labels, scores),'approximation:',gain_agc_approximate(labels,scores,sample=.25))
+    >>> print('AGC:',agc_score(labels, scores),'approximation:',agc_approximate(labels,scores,sample=.5))
 
     Reference
     ---------
