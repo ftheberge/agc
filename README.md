@@ -8,6 +8,19 @@ In this code, we provide three functions:
 * `agc_approximate`: Approximate the area under the gain curve (AGC) for binary labelled data via sampling
 * `gain_curve`: Compute the proportion of data points and true positive rate for all thresholds, for plotting
 
+The functions can be imported from the supplied `agc.py` file, or installed via `pip install agc`.
 
+## A simple example
 
+```
+## create toy binary labels and scores
+labels = np.concatenate((np.repeat(1,100),np.repeat(0,900)))
+scores = np.concatenate((np.random.uniform(.4,.8,100),np.random.uniform(.2,.6,900)))
+
+## compute area under the gain curve
+print(agc_score(labels, scores))
+
+## now for the top scoring 10% of the points
+print(agc_score(labels, scores, truncate=0.1))
+```
 
