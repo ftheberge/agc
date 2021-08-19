@@ -3,7 +3,7 @@ import numpy as np
 ## Area under Gain Curve
 def gain_agc_score(y_true, y_score, pos_label=1, sample_weight=None, truncate=1, normalized=True):
     """
-    Compute area under the gain curve for binary labelled data
+    Compute the area under the gain curve (agc) for binary labelled data
 
     Parameters
     ----------
@@ -27,7 +27,7 @@ def gain_agc_score(y_true, y_score, pos_label=1, sample_weight=None, truncate=1,
     Returns
     -------
 
-    AGC: float; area under the gain curve
+    agc: float; area under the gain curve
 
     Notes
     -----
@@ -39,7 +39,7 @@ def gain_agc_score(y_true, y_score, pos_label=1, sample_weight=None, truncate=1,
 
     >>> labels = np.concatenate((np.repeat(1,100),np.repeat(0,900)))
     >>> scores = np.concatenate((np.random.uniform(.4,.8,100),np.random.uniform(.2,.6,900)))
-    >>> agc_score(labels, scores)
+    >>> gain_agc_score(labels, scores)
 
     Reference
     ---------
@@ -115,7 +115,7 @@ def gain_agc_score(y_true, y_score, pos_label=1, sample_weight=None, truncate=1,
 ## Area under Gain Curve
 def gain_curve(y_true, y_score, pos_label=1, sample_weight=None, truncate=1):
     """
-    Compute area under the gain curve for binary labelled data
+    Compute the proportion of data points and true positive rate for all thresholds, for plotting
 
     Parameters
     ----------
@@ -136,7 +136,9 @@ def gain_curve(y_true, y_score, pos_label=1, sample_weight=None, truncate=1):
     Returns
     -------
 
-    AGC: float; area under the gain curve
+    top: proportion of (top scoring) points
+    tpr: true positive rate for top scoring points
+    thresh: corresponding score thresholds
 
     Example
     -------
@@ -240,7 +242,7 @@ def gain_agc_approximate(y_true, y_score, pos_label=1, sample_weight=None, trunc
     Returns
     -------
 
-    AGC: float; approximated area under the gain curve
+    agc: float; approximated area under the gain curve
 
     Notes
     -----
@@ -254,7 +256,7 @@ def gain_agc_approximate(y_true, y_score, pos_label=1, sample_weight=None, trunc
 
     >>> labels = np.concatenate((np.repeat(1,100),np.repeat(0,900)))
     >>> scores = np.concatenate((np.random.uniform(.4,.8,100),np.random.uniform(.2,.6,900)))
-    >>> print('AGC:',agc_score(labels, scores),'approximation:',agc_approximate(labels,scores,sample=.25))
+    >>> print('AGC:',gain_agc_score(labels, scores),'approximation:',gain_agc_approximate(labels,scores,sample=.25))
 
     Reference
     ---------
