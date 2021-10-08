@@ -1,4 +1,33 @@
 import numpy as np
+import scipy.stats as ss
+
+## faster version w/o sample weights
+## called from main function if needed
+def agc_fast(y_true, y_score, pos_label=1, truncate=1, normalized=True):
+    
+    n = len(y_score)
+    pos = sum(y_true)
+    rk = n+1-ss.rankdata(y_score)
+    if truncate <=1:
+        T = int(np.round(truncate*n))
+    else:
+        T = int(truncate)
+
+    x = np.where(y_true==pos_label)[0]
+    r = [rk[i] for i in x if rk[i]<=T]
+
+    A = sum([T-i+0.5 for i in list(r)])
+    if T <= pos:
+        M = T*T/2
+    else:
+        M = pos*pos/2 + (T-pos)*pos
+    R = T*T*pos/(2*n)
+
+    if normalized:
+        return (A-R)/(M-R)
+    else:
+        return (A/M)
+
 
 ## Area under Gain Curve
 def agc_score(y_true, y_score, pos_label=1, sample_weight=None, truncate=1, normalized=True):
@@ -46,6 +75,9 @@ def agc_score(y_true, y_score, pos_label=1, sample_weight=None, truncate=1, norm
 
     TBD
     """
+    if sample_weight is None:
+        return agc_fast(y_true=y_true, y_score=y_score, pos_label=pos_label, truncate=truncate, normalized=normalized)
+    
     ## number of data points
     N = len(y_score)
     if len(y_true) != N:
