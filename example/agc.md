@@ -559,6 +559,3 @@ print("AGC' =",a,' time =',end-start)
 ```
 
     AGC' = 0.16133099968701095  time = 3.7745940685272217
-
-%load_ext line_profiler
-%lprun -f gain_agc_approximate gain_agc_approximate(labels, scores, sample=.7, quantiles=4000)
