@@ -30,6 +30,7 @@ print(agc_score(labels, scores, truncate=0.1))
 print(agc_score(labels, scores, truncate=100))
 ```
 
-## More details in Notebook:
+## More details in Notebooks:
 
+https://github.com/ftheberge/agc/blob/main/intro/agc_intro.md
 https://github.com/ftheberge/agc/blob/main/example/agc.md
