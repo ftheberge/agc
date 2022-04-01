@@ -16,7 +16,7 @@ def agc_fast(y_true, y_score, pos_label=1, truncate=1, normalized=True):
 
     x = np.where(y_true==pos_label)[0]
     r = [rk[i] for i in x if rk[i]<=T]
-
+    
     A = sum([T-i+0.5 for i in list(r)])
     if T <= pos:
         M = T*T/2
@@ -97,7 +97,7 @@ def agc_score(y_true, y_score, pos_label=1, sample_weight=None, truncate=1, norm
     truncate: float in range (0,1] or integer > 1
       if in range (0,1]: proportion of top-scoring points to consider
       if integer > 1: number of top-scoring points to consider
-      if several points have the same score as the cutoff point, all such points are also considered
+      if several points have the same score, average rank is used
 
     normalized: boolean, default=True
       return normalized AGC
@@ -148,7 +148,7 @@ def gain_curve(y_true, y_score, pos_label=1, sample_weight=None, truncate=1):
     truncate: float in range (0,1] or integer > 1
       if in range (0,1]: proportion of top-scoring points to consider
       if integer > 1: number of top-scoring points to consider
-      if several points have the same score as the cutoff point, all such points are also considered
+      if several points have the same score, average rank is used
     
     Returns
     -------
@@ -218,5 +218,5 @@ def gain_curve(y_true, y_score, pos_label=1, sample_weight=None, truncate=1):
     p = [pos[i] for i in U]
     p_hat = np.cumsum(p)
 
-    return u_hat[:trunc]/max(u_hat), p_hat[:trunc]/max(p_hat), U
+    return u_hat[:trunc+1]/max(u_hat), p_hat[:trunc+1]/max(p_hat), U
 
