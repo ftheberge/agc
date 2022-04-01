@@ -32,5 +32,8 @@ print(agc_score(labels, scores, truncate=100))
 
 ## More details in Notebooks:
 
+Quick intro here:
 https://github.com/ftheberge/agc/blob/main/intro/agc_intro.md
+
+For more details:
 https://github.com/ftheberge/agc/blob/main/example/agc.md
