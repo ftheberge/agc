@@ -69,9 +69,9 @@ print('algo 3:',roc_auc_score(y_true, p3))
 
 ```
 
-    algo 1: 0.967377535865866
-    algo 2: 0.8906596763863865
-    algo 3: 0.8894806957357357
+    algo 1: 0.9675289021221222
+    algo 2: 0.8909406969469471
+    algo 3: 0.889273008058058
 
 
 # Step 2 - AP
@@ -89,9 +89,9 @@ print('algo 3:',average_precision_score(y_true, p3))
 ## scores are much lower now, but algo 1 still seems the best choice
 ```
 
-    algo 1: 0.05713149396807394
-    algo 2: 0.020489802287212304
-    algo 3: 0.025967287711567134
+    algo 1: 0.05827909666098113
+    algo 2: 0.021071156977723823
+    algo 3: 0.026473028140348943
 
 
 # Step 3 - Precision
@@ -115,7 +115,7 @@ print('algo 3:',sum([i<10000 for i in x])/1000)
 ## well now, algo 2 or 3 are best, with equal performance; what to do?
 ```
 
-    algo 1: 0.097
+    algo 1: 0.1
     algo 2: 0.4
     algo 3: 0.4
 
@@ -153,8 +153,8 @@ plt.legend();
 # Step 5 - AGC
 
 Indeed there is! Gain curves are not used as much as ROC or precision-recall curves, but for the scenario we have here, they are a perfect choice.
-With gain curves, we replace the false positive rate in x-axis of ROC with the number of top-scoring points considered, so when we look at top-$k$, the x-axis is $k/N$, where $N$ is the total number of points, and the y-axis is the true positive rate.
-Below we draw the gain curve for algorithm 3 (shown in red); the black line is expected results under random ranking and the blue line is the best possible curve.
+With gain curves, we replace the false positive rate in x-axis of ROC with the number of top-scoring points considered, so when we look at top-k, the x-axis is k/N, where N is the total number of points, and the y-axis is the true positive rate.
+Below we draw the gain curve for algorithm 3 (shown in red); the black line is the expected results under random ranking and the blue line is the best possible curve.
 
 In the next cell, we compute the AGC (area under the gain curves) for the 3 algorithms, which show similar results to the AUC.
 
@@ -186,19 +186,19 @@ print('algo 3:',agc_score(y_true, p3, normalized=False))
 
 ```
 
-    algo 1: 0.9673938552576288
-    algo 2: 0.8907143738969485
-    algo 3: 0.8895359830315157
+    algo 1: 0.9675451457928964
+    algo 2: 0.8909952538769385
+    algo 3: 0.8893283992496248
 
 
 # Step 6 - Denouement ... truncated, normalized AGC!
 
-Given the nature of the x-axis with gain curves, we can easily truncate it so that we only consider the top-$k$ scoring points. Moreover, given: 
-* AGC(k): area under the gain curve truncated at $k$
-* R(k): **expected** area under the gain curve truncated at $k$ under random classification
-* M(k): **maximal** possible area under the gain curve truncated at $k$
+Given the nature of the x-axis with gain curves, we can easily truncate it so that we only consider the top-k scoring points. Moreover, given: 
+* AGC(k): area under the gain curve truncated at k
+* R(k): **expected** area under the gain curve truncated at k under random classification
+* M(k): **maximal** possible area under the gain curve truncated at k
 
-we define the **normalized** area under the gain curve **truncated** at $k$ as:
+we define the **normalized** area under the gain curve **truncated** at k as:
 
 * AGC'(k) = (AGC(k)-R(k)) / (M(k)-R(k))
 
@@ -216,18 +216,18 @@ print('algo 3:',agc_score(y_true, p3, normalized=True, truncate=1000))
 
 ```
 
-    algo 1: 0.09603903903903904
-    algo 2: 0.34544344344344347
-    algo 3: 0.44906306306306304
+    algo 1: 0.10652452452452453
+    algo 2: 0.3486446446446446
+    algo 3: 0.4508108108108108
 
 
 # Appendix - Speed tests
 
-This is all very nice indeed, but how quickly can we compute AGC'(k) when $N$, the total number of points, is large? 
+This is all very nice indeed, but how quickly can we compute AGC'(k) when N, the total number of points, is large? 
 Does the value at which we truncate matter?
-In the first cell below, we look at the same example ($N$ = 10M), truncating at various values, using the results for algorithm 3. We see that the truncation value is not relevant, not surprizing as the bottleneck is to sort the whole vector of scores anyways.
-In the next cell, we look at a different experiment where we vary the size $N$ of the dataset from $2^{16}$ to $2^{27}$ inclusively. We do 10 runs for each value of $N$ and plot the averages on a log-log scale.
-We see that even for datasets as large as $N = 2^{27} = 134,217,728$, run time is under $2^6 = 64$ seconds (on a MacBook Pro).
+In the first cell below, we look at the same example (N = 10M), truncating at various values, using the results for algorithm 3. We see that the truncation value is not relevant, not surprizing as the bottleneck is to sort the whole vector of scores anyways.
+In the next cell, we look at a different experiment where we vary the size N of the dataset from 2^{16} to 2^{27} inclusively. We do 10 runs for each value of N and plot the averages on a log-log scale.
+We see that even for datasets as large as N = 2^{27} = 134,217,728, run time is about 1 minute on a MacBook Pro.
 
 
 
@@ -238,15 +238,15 @@ X = [100,1000,10000,100000,1000000]
 for t in X:
     start = time.time()
     s = agc_score(y_true, p3, normalized=True, truncate=t)
-    print(t,':',time.time()-start,'sec')
+    print('k =',t,':',time.time()-start,'sec')
 
 ```
 
-    100 : 2.567754030227661 sec
-    1000 : 2.575284957885742 sec
-    10000 : 2.5659730434417725 sec
-    100000 : 2.5834171772003174 sec
-    1000000 : 2.583716869354248 sec
+    k = 100 : 2.504861831665039 sec
+    k = 1000 : 2.5109469890594482 sec
+    k = 10000 : 2.507124900817871 sec
+    k = 100000 : 2.5066540241241455 sec
+    k = 1000000 : 2.513139247894287 sec
 
 
 
