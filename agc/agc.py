@@ -14,6 +14,13 @@ def agc_fast(y_true, y_score, pos_label=1, truncate=1, normalized=True):
     else:
         T = int(truncate)
 
+    ## fix in case of ties - go to upper value for truncation
+    r = np.sort(rk)[T-1]
+    s = np.sum([i<=r for i in rk])
+    if s>T:
+        print('Warning - tied scores, truncating for top',s,'scores')
+        T = s
+
     x = np.where(y_true==pos_label)[0]
     r = [rk[i] for i in x if rk[i]<=T]
     
@@ -39,6 +46,13 @@ def agc_w(y_true, y_score, sample_weight=None, pos_label=1, truncate=1, normaliz
     else:
         T = int(truncate)
         
+    ## fix in case of ties - go to upper value for truncation
+    r = np.sort(rk)[T-1]
+    s = np.sum([i<=r for i in rk])
+    if s>T:
+        print('Warning - tied scores, truncating for top',s,'scores')
+        T = s
+
     D = pd.DataFrame(rk,columns=['rank'])
     D['w'] = sample_weight
     D['label'] = y_true

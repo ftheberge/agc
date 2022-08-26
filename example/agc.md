@@ -77,7 +77,7 @@ AUC = roc_auc_score(np.array(labels), np.array(scores))
 print('AUC=',AUC,'AUC\'=',(AUC-.5)/.5)
 ```
 
-    AUC= 0.6668878421052632 AUC'= 0.3337756842105264
+    AUC= 0.6797747368421052 AUC'= 0.3595494736842104
 
 
 
@@ -120,8 +120,8 @@ print('Area under curve:',auc(recall, precision))
 print('Average precision:',average_precision_score(np.array(labels), np.array(scores), pos_label=1))
 ```
 
-    Area under curve: 0.15717801468589637
-    Average precision: 0.15813978246031615
+    Area under curve: 0.1763575078137854
+    Average precision: 0.17687238899948507
 
 
 
@@ -256,8 +256,8 @@ print("AGC':",agc_score(y_true=labels, y_score=scores, pos_label=1))
 print("AUC':",(AUC-.5)/.5)
 ```
 
-    AGC': 0.33377568421052634
-    AUC': 0.3337756842105264
+    AGC': 0.35954947368421053
+    AUC': 0.3595494736842104
 
 
 
@@ -269,9 +269,9 @@ print("AGC'(200):",agc_score(y_true=labels, y_score=scores, pos_label=1, truncat
 
 ```
 
-    AGC'(.1): 0.21712964285714287
-    AGC'(.01): 0.4536578947368421
-    AGC'(200): 0.4536578947368421
+    AGC'(.1): 0.237835
+    AGC'(.01): 0.47560526315789475
+    AGC'(200): 0.47560526315789475
 
 
 ## Weighted dataset
@@ -289,7 +289,7 @@ AUC = roc_auc_score(np.array(labels), np.array(scores), sample_weight=np.array(W
 print('AUC=',AUC,'AUC\'=',(AUC-.5)/.5)
 ```
 
-    AUC= 0.6706166179775479 AUC'= 0.3412332359550958
+    AUC= 0.6787362723204463 AUC'= 0.3574725446408926
 
 
 For weighted datasets, we can also sample to estimate AUC, but we need to take weighted sample.
@@ -308,7 +308,7 @@ s_neg = [scores[i] for i in N_pos+np.random.choice(N-N_pos,size=sample_size,repl
 print('AUC approximation:',sum(np.array(s_pos)>np.array(s_neg))/sample_size)
 ```
 
-    AUC approximation: 0.648
+    AUC approximation: 0.6935
 
 
 We can also compute AGC with those weights; recall that AUC'=AGC'.
@@ -322,8 +322,8 @@ print("AGC'= ",agc_score(labels, scores, sample_weight=W, normalized=True))
 
 ```
 
-    AGC =  0.6790057891469397
-    AGC'=  0.3412332359550955
+    AGC =  0.6868555489814436
+    AGC'=  0.3574725446408929
 
 
 ## Tied scores
@@ -355,15 +355,15 @@ print('AGC =',agc_score(labels, sc, sample_weight=W, normalized=False),
 
 ```
 
-    there are 824 distinct scores out of 20000
+    there are 757 distinct scores out of 20000
     
     unweighted results
-    AUC = 0.6668687894736842 AUC'= 0.33373757894736844
-    AGC = 0.6754106153846153 AGC'= 0.33373757894736844
+    AUC = 0.6797642105263157 AUC'= 0.3595284210526315
+    AGC = 0.6879753846153847 AGC'= 0.35952842105263155
     
     weighted results
-    AUC = 0.6706082177964089 AUC'= 0.3412164355928178
-    AGC = 0.6789976029127129 AGC'= 0.34121643559281695
+    AUC = 0.6787461518138207 AUC'= 0.3574923036276414
+    AGC = 0.6868651787910439 AGC'= 0.3574923036276421
 
 
 ## To normalized or not to normalize 
@@ -384,10 +384,10 @@ print('un-normalized AGC(1) = ',agc_score(labels, scores, normalized=False, trun
 print('un-normalized AGC(.01) = ',agc_score(labels, scores, normalized=False, truncate=.01))
 ```
 
-    normalized AGC(1) =  0.33377568421052634
-    normalized AGC(.01) =  0.4536578947368421
-    un-normalized AGC(1) =  0.6754291794871795
-    un-normalized AGC(.01) =  0.480975
+    normalized AGC(1) =  0.35954947368421053
+    normalized AGC(.01) =  0.47560526315789475
+    un-normalized AGC(1) =  0.687985641025641
+    un-normalized AGC(.01) =  0.501825
 
 
 

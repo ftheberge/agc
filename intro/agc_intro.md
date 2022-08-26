@@ -2,7 +2,7 @@
 
 We introduce the Python package **agc** which is useful for the evaluation of **binary classifiers** under a commonly encountered scenario where **limited resources** are available to validate the top-scoring results. In such cases, we seek a classifier that retrieves as many positive cases as possible amongst the top-scoring points, and we are less concerned with the overall performance.
 
-To that effect, we introduce the **Normalized Truncates Area under Gain Curves (AGC)** measure, and compare it with well known measures such as the **AUC** (area under the ROC curve), Precision, and Average Precision (**AP**).
+To that effect, we introduce the **Normalized Truncated Area under Gain Curves (AGC)** measure, and compare it with well known measures such as the **AUC** (area under the ROC curve), Precision, and Average Precision (**AP**).
 
 This is illustrated via a story where we compare outputs from 3 hypothetical algorithms. 
 
@@ -69,9 +69,9 @@ print('algo 3:',roc_auc_score(y_true, p3))
 
 ```
 
-    algo 1: 0.9675289021221222
-    algo 2: 0.8909406969469471
-    algo 3: 0.889273008058058
+    algo 1: 0.9678522878078079
+    algo 2: 0.8885876465065066
+    algo 3: 0.8903807030330331
 
 
 # Step 2 - AP
@@ -89,9 +89,9 @@ print('algo 3:',average_precision_score(y_true, p3))
 ## scores are much lower now, but algo 1 still seems the best choice
 ```
 
-    algo 1: 0.05827909666098113
-    algo 2: 0.021071156977723823
-    algo 3: 0.026473028140348943
+    algo 1: 0.05926437994255093
+    algo 2: 0.020786783361596665
+    algo 3: 0.024974196256253425
 
 
 # Step 3 - Precision
@@ -115,7 +115,7 @@ print('algo 3:',sum([i<10000 for i in x])/1000)
 ## well now, algo 2 or 3 are best, with equal performance; what to do?
 ```
 
-    algo 1: 0.1
+    algo 1: 0.099
     algo 2: 0.4
     algo 3: 0.4
 
@@ -186,9 +186,9 @@ print('algo 3:',agc_score(y_true, p3, normalized=False))
 
 ```
 
-    algo 1: 0.9675451457928964
-    algo 2: 0.8909952538769385
-    algo 3: 0.8893283992496248
+    algo 1: 0.9678683697048525
+    algo 2: 0.8886433805502751
+    algo 3: 0.89043554010005
 
 
 # Step 6 - Denouement ... truncated, normalized AGC!
@@ -216,9 +216,9 @@ print('algo 3:',agc_score(y_true, p3, normalized=True, truncate=1000))
 
 ```
 
-    algo 1: 0.10652452452452453
-    algo 2: 0.3486446446446446
-    algo 3: 0.4508108108108108
+    algo 1: 0.09101601601601601
+    algo 2: 0.34924324324324324
+    algo 3: 0.4434954954954955
 
 
 # Appendix - Speed tests
@@ -226,7 +226,7 @@ print('algo 3:',agc_score(y_true, p3, normalized=True, truncate=1000))
 This is all very nice indeed, but how quickly can we compute AGC'(k) when N, the total number of points, is large? 
 Does the value at which we truncate matter?
 In the first cell below, we look at the same example (N = 10M), truncating at various values, using the results for algorithm 3. We see that the truncation value is not relevant, not surprizing as the bottleneck is to sort the whole vector of scores anyways.
-In the next cell, we look at a different experiment where we vary the size N of the dataset from 2^{16} to 2^{27} inclusively. We do 10 runs for each value of N and plot the averages on a log-log scale.
+In the next cell, we look at a different experiment where we vary the size N of the dataset from 2^{16} to 2^{27} inclusively. We do 3 runs for each value of N and plot the averages on a log-log scale.
 We see that even for datasets as large as N = 2^{27} = 134,217,728, run time is about 1 minute on a MacBook Pro.
 
 
@@ -242,11 +242,11 @@ for t in X:
 
 ```
 
-    k = 100 : 2.504861831665039 sec
-    k = 1000 : 2.5109469890594482 sec
-    k = 10000 : 2.507124900817871 sec
-    k = 100000 : 2.5066540241241455 sec
-    k = 1000000 : 2.513139247894287 sec
+    k = 100 : 4.508025884628296 sec
+    k = 1000 : 4.47531795501709 sec
+    k = 10000 : 4.434575796127319 sec
+    k = 100000 : 4.432496070861816 sec
+    k = 1000000 : 4.45591402053833 sec
 
 
 
@@ -256,16 +256,17 @@ x = []
 y = []
 for i in [16,17,18,19,20,21,22,23,24,25,26,27]: ## 
     n = int(2**i)
+    print('n =',n)
     x.append(n)
     pos = n//1000
     y_tr = np.concatenate((np.repeat(1,pos),np.repeat(0,n-pos)))
     ctr = 0
-    for z in range(10):
+    for z in range(3):
         proba = np.random.random(n)
         start = time.time()
         s = agc_score(y_tr, proba, normalized=True, truncate=n//100)
         ctr += (time.time()-start)    
-    y.append(ctr/10)
+    y.append(ctr/3)
 
 ## plot
 plt.loglog(x[:12],y[:12],'o-',base=2)
@@ -276,8 +277,42 @@ plt.ylabel('average run time (seconds)', fontsize=14);
 
 ```
 
+    n = 65536
+    n = 131072
+    n = 262144
+    n = 524288
+    n = 1048576
+    n = 2097152
+    n = 4194304
+    n = 8388608
+    n = 16777216
+    n = 33554432
+    n = 67108864
+    n = 134217728
+
+
 
     
-![png](output_19_0.png)
+![png](output_19_1.png)
     
+
+
+## Special case - truncation and tied scores
+
+In the case where there are tied scores, when computing the truncated ALC, if the truncation happens at a point with repeated score, then we consider all points with the same score. 
+
+For example, if the top-100 scores are all equal to 1, then truncation at the top-k points will be the same for all values 2 <= k <= 100; a warning is issued if the truncation level needs to be adjusted in this way. We illustrate this below.
+
+
+
+```python
+scr = np.concatenate((np.repeat(1,100),np.random.uniform(0,.99,900)))
+labels = np.concatenate((np.repeat(1,50), np.repeat(0,950)))
+print(agc_score(labels, scr, truncate=50))
+print(agc_score(labels,scr,truncate=100))
+```
+
+    Warning - tied scores, truncating for top 100 scores
+    0.6428571428571429
+    0.6428571428571429
 
