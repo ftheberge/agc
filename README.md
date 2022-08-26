@@ -32,12 +32,6 @@ print(agc_score(labels, scores, truncate=100))
 
 ## More details in Notebooks:
 
-For a quick introduction, see the following notebook:
-https://github.com/ftheberge/agc/blob/main/agc/agc_intro.ipynb
-also available in markup format:
-https://github.com/ftheberge/agc/blob/main/intro/agc_intro.md
+For a quick introduction, see the following notebook: https://github.com/ftheberge/agc/blob/main/agc/agc_intro.ipynb which also available in markup format: https://github.com/ftheberge/agc/blob/main/intro/agc_intro.md
 
-For more details, see the notebook:
-https://github.com/ftheberge/agc/blob/main/agc/agc.ipynb
-also available in markup format:
-https://github.com/ftheberge/agc/blob/main/example/agc.md
+For more details, see the notebook: https://github.com/ftheberge/agc/blob/main/agc/agc.ipynb which also available in markup format: https://github.com/ftheberge/agc/blob/main/example/agc.md
